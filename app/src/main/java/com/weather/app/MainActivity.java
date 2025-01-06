@@ -14,13 +14,15 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class MainActivity extends AppCompatActivity {
 
-    TextView tv_visibility, tv_temp, tv_feels_like;
+    TextView tv_sky, tv_temp, tv_feels_like, tv_temp_max_min;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,35 +35,38 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        tv_visibility = findViewById(R.id.tv_visibility);
+        tv_sky = findViewById(R.id.tv_sky);
         tv_temp = findViewById(R.id.tv_temp);
         tv_feels_like = findViewById(R.id.tv_feels_like);
+        tv_temp_max_min = findViewById(R.id.tv_temp_max_min);
 
-        requestWeather(33.44, -94.04);
+        requestWeather(22.936901, 91.307137);
     }
 
     private void requestWeather(double latitude, double longitude) {
         String url = Config.API_URL+"lat="+latitude+"&lon="+longitude+"&appid="+Config.API_KEY;
 
         RequestQueue queue = Volley.newRequestQueue(this);
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url, response -> {
+            try {
+                JSONObject obj = new JSONObject(response);
+                JSONObject weather = obj.getJSONArray("weather").getJSONObject(0);
+                JSONObject main = obj.getJSONObject("main");
+                JSONObject wind = obj.getJSONObject("wind");
+                JSONObject sys = obj.getJSONObject("sys");
+                JSONObject clouds = obj.getJSONObject("clouds");
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
-                (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+                tv_sky.setText(weather.getString("main"));
+                tv_temp.setText(String.format("%s°", main.getString("temp")));
+                tv_feels_like.setText(String.format("Feels like %s°", main.getString("feels_like")));
+                tv_temp_max_min.setText(String.format("High %s° · Low %s°", main.getString("temp_max"), main.getString("temp_min")));
 
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        tv_visibility.setText("Response: " + response.toString());
-                    }
-                }, new Response.ErrorListener() {
 
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        // TODO: Handle error
-                        tv_visibility.setText(error.getMessage());
-                    }
-                });
-
-        queue.add(jsonObjectRequest);
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+        }, error -> {});
+        queue.add(stringRequest);
 
     }
 }
