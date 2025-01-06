@@ -1,7 +1,9 @@
 package com.weather.app;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,7 +24,7 @@ import org.json.JSONObject;
 
 public class MainActivity extends AppCompatActivity {
 
-    TextView tv_sky, tv_temp, tv_feels_like, tv_temp_max_min;
+    TextView tv_sky, tv_temp, tv_feels_like, tv_temp_max_min, tv_wind_speed, tv_wind_direction, tv_humidity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +41,11 @@ public class MainActivity extends AppCompatActivity {
         tv_temp = findViewById(R.id.tv_temp);
         tv_feels_like = findViewById(R.id.tv_feels_like);
         tv_temp_max_min = findViewById(R.id.tv_temp_max_min);
+
+        tv_wind_speed = findViewById(R.id.tv_wind_speed);
+        tv_wind_direction = findViewById(R.id.tv_wind_direction);
+
+        tv_humidity = findViewById(R.id.tv_humidity);
 
         requestWeather(22.936901, 91.307137);
     }
@@ -61,11 +68,20 @@ public class MainActivity extends AppCompatActivity {
                 tv_feels_like.setText(String.format("Feels like %s°", main.getString("feels_like")));
                 tv_temp_max_min.setText(String.format("High %s° · Low %s°", main.getString("temp_max"), main.getString("temp_min")));
 
+                tv_wind_speed.setText(String.format("%s mph", wind.getString("speed")));
+                tv_wind_direction.setText(String.format("From %s°", wind.getString("deg")));
+
+                tv_humidity.setText(String.format("%s%%", main.getString("humidity")));
+
 
             } catch (JSONException e) {
                 throw new RuntimeException(e);
             }
-        }, error -> {});
+            findViewById(R.id.progress_circular).setVisibility(View.GONE);
+        }, error -> {
+            findViewById(R.id.progress_circular).setVisibility(View.GONE);
+            Toast.makeText(this, "Something went wrong!", Toast.LENGTH_SHORT).show();
+        });
         queue.add(stringRequest);
 
     }
