@@ -42,4 +42,5 @@ dependencies {
 
     implementation(libs.volley)
     implementation (libs.play.services.location)
+    implementation (libs.glide)
 }

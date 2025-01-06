@@ -5,10 +5,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.google.android.material.card.MaterialCardView
-        app:cardCornerRadius="30dp"
-        android:layout_margin="3dp"
-        android:layout_width="60dp"
-        android:layout_height="170dp">
+        app:cardCornerRadius="35dp"
+        android:layout_margin="4dp"
+        android:layout_width="65dp"
+        android:layout_height="180dp">
 
         <RelativeLayout
             android:orientation="vertical"
@@ -21,8 +21,8 @@
                 android:layout_marginBottom="10dp"
                 android:layout_centerHorizontal="true"
                 android:layout_above="@id/tv_day_name"
-                android:layout_width="40dp"
-                android:layout_height="40dp"/>
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_temp_max"

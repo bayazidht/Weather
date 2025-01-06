@@ -5,13 +5,13 @@ public class ForecastItem {
     String dayName;
     String tempMax;
     String tempMin;
-    String weather;
+    String icon;
 
-    public ForecastItem(String dayName, String tempMax, String tempMin, String weather) {
+    public ForecastItem(String dayName, String tempMax, String tempMin, String icon) {
         this.dayName = dayName;
         this.tempMax = tempMax;
         this.tempMin = tempMin;
-        this.weather = weather;
+        this.icon = icon;
     }
 
     public String getDayName() {
@@ -38,11 +38,11 @@ public class ForecastItem {
         this.tempMin = tempMin;
     }
 
-    public String getWeather() {
-        return weather;
+    public String getIcon() {
+        return icon;
     }
 
-    public void setWeather(String weather) {
-        this.weather = weather;
+    public void setIcon(String icon) {
+        this.icon = icon;
     }
 }

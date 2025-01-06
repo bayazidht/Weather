@@ -42,5 +42,13 @@ public class Helper {
         return new DecimalFormat("#").format((visibility/1000)/1.609344);
     }
 
+    public String getWindSpeed(double speed) {
+        return new DecimalFormat("#.#").format(speed);
+    }
+
+    public String getWeatherIcon(String icon) {
+        return "https://openweathermap.org/img/wn/"+icon+"@4x.png";
+    }
+
 
 }

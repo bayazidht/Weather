@@ -10,6 +10,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+
 import java.util.ArrayList;
 
 public class ForecastRecyclerAdapter extends RecyclerView.Adapter<ForecastRecyclerAdapter.ViewHolder> {
@@ -33,9 +35,12 @@ public class ForecastRecyclerAdapter extends RecyclerView.Adapter<ForecastRecycl
     public void onBindViewHolder(ViewHolder holder, int position) {
         ForecastItem item = forecastItems.get(position);
         holder.tvDayName.setText(item.dayName);
-        holder.tvTempMax.setText(item.tempMax);
-        holder.tvTempMin.setText(item.tempMin);
+        holder.tvTempMax.setText(String.format("%s°", item.tempMax));
+        holder.tvTempMin.setText(String.format("%s°", item.tempMin));
 
+        Glide.with(mContext)
+                .load(new Helper().getWeatherIcon(item.getIcon()))
+                .into(holder.ivWeather);
     }
 
     @Override

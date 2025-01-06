@@ -5,7 +5,10 @@ import android.annotation.SuppressLint;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Looper;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,12 +27,15 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.bumptech.glide.Glide;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.Priority;
+import com.google.android.material.search.SearchBar;
+import com.google.android.material.search.SearchView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -39,10 +45,11 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    String unit = "F";
+    private final String unit = "C";
 
-    TextView tv_sky, tv_temp, tv_feels_like, tv_temp_max_min, tv_wind_speed,
+    private TextView tv_sky, tv_temp, tv_feels_like, tv_temp_max_min, tv_wind_speed,
             tv_wind_direction, tv_humidity, tv_visibility, tv_sunrise, tv_sunset;
+    private ImageView iv_weather;
 
     private ForecastRecyclerAdapter recyclerAdapter;
     private ArrayList<ForecastItem> forecastItems;
@@ -73,6 +80,8 @@ public class MainActivity extends AppCompatActivity {
         tv_sunrise = findViewById(R.id.tv_sunrise);
         tv_sunset = findViewById(R.id.tv_sunset);
 
+        iv_weather = findViewById(R.id.iv_weather);
+
         RecyclerView mRecyclerView = findViewById(R.id.forecast_list);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         mRecyclerView.setLayoutManager(linearLayoutManager);
@@ -81,10 +90,34 @@ public class MainActivity extends AppCompatActivity {
         recyclerAdapter = new ForecastRecyclerAdapter(this, forecastItems);
         mRecyclerView.setAdapter(recyclerAdapter);
 
+        setSearch();
+
+    }
+
+    private void setSearch() {
+        SearchBar searchBar = findViewById(R.id.search_bar);
+        SearchView searchView = findViewById(R.id.search_view);
+        searchView.setupWithSearchBar(searchBar);
+
+        searchView.getEditText().addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+            @Override
+            public void afterTextChanged(Editable s) {
+                searchView.clearFocus();
+            }
+        });
+
+
     }
 
     private void requestWeather(double latitude, double longitude) {
         String url = Config.WEATHER_API_URL+"lat="+latitude+"&lon="+longitude+"&appid="+Config.API_KEY;
+
+        //String url = Config.WEATHER_API_URL+"q=&appid="+Config.API_KEY;
 
         RequestQueue queue = Volley.newRequestQueue(this);
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, response -> {
@@ -100,12 +133,14 @@ public class MainActivity extends AppCompatActivity {
                 double temp_max = main.getDouble("temp_max");
                 double temp_min = main.getDouble("temp_min");
 
+                Glide.with(this).load(new Helper().getWeatherIcon(weather.getString("icon"))).into(iv_weather);
+
                 tv_sky.setText(String.format("%s", weather.getString("main")));
                 tv_temp.setText(String.format("%s°", new Helper().getTemp(temp, unit)));
                 tv_feels_like.setText(String.format("Feels like %s°", new Helper().getTemp(feels_like, unit)));
                 tv_temp_max_min.setText(String.format("High %s° · Low %s°", new Helper().getTemp(temp_max, unit), new Helper().getTemp(temp_min, unit)));
 
-                tv_wind_speed.setText(String.format("%s mph", wind.getDouble("speed")));
+                tv_wind_speed.setText(String.format("%s km/h", new Helper().getWindSpeed(wind.getDouble("speed"))));
                 tv_wind_direction.setText(String.format("From %s", new Helper().getWindDirection(wind.getDouble("deg"))));
 
                 tv_humidity.setText(String.format("%s%%", main.getString("humidity")));
@@ -145,8 +180,8 @@ public class MainActivity extends AppCompatActivity {
 
                     forecastItems.add(new ForecastItem(
                             new Helper().getDayName(time),
-                            main.getString("temp_max"),
-                            main.getString("temp_min"),
+                            new Helper().getTemp(main.getDouble("temp_max"), unit),
+                            new Helper().getTemp(main.getDouble("temp_min"), unit),
                             weatherObj.getString("icon")
                     ));
                 }
@@ -163,8 +198,6 @@ public class MainActivity extends AppCompatActivity {
         });
         queue.add(stringRequest);
     }
-
-
 
 
     private void requestLocationPermissions() {
