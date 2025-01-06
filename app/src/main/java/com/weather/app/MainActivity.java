@@ -1,11 +1,21 @@
 package com.weather.app;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
+import android.content.Intent;
+import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Looper;
+import android.provider.Settings;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -15,11 +25,19 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.Priority;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -51,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
         tv_sunrise = findViewById(R.id.tv_sunrise);
         tv_sunset = findViewById(R.id.tv_sunset);
 
-        requestWeather(22.936901, 91.307137);
+        requestLocationPermissions();
     }
 
     private void requestWeather(double latitude, double longitude) {
@@ -65,7 +83,6 @@ public class MainActivity extends AppCompatActivity {
                 JSONObject main = obj.getJSONObject("main");
                 JSONObject wind = obj.getJSONObject("wind");
                 JSONObject sys = obj.getJSONObject("sys");
-                JSONObject clouds = obj.getJSONObject("clouds");
 
                 tv_sky.setText(weather.getString("main"));
                 tv_temp.setText(String.format("%s°", main.getString("temp")));
@@ -86,6 +103,7 @@ public class MainActivity extends AppCompatActivity {
                 throw new RuntimeException(e);
             }
             findViewById(R.id.progress_circular).setVisibility(View.GONE);
+            findViewById(R.id.weather_details).setVisibility(View.VISIBLE);
         }, error -> {
             findViewById(R.id.progress_circular).setVisibility(View.GONE);
             Toast.makeText(this, "Something went wrong!", Toast.LENGTH_SHORT).show();
@@ -94,7 +112,72 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private String getTime(long time) {
-        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a");
+        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a", Locale.getDefault());
         return sdf.format(time);
+    }
+
+    private void requestLocationPermissions() {
+        locationPermissionRequest.launch(new String[] {android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION});
+    }
+    ActivityResultLauncher<String[]> locationPermissionRequest = registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), result -> {
+
+        Boolean fineLocationGranted = result.getOrDefault(android.Manifest.permission.ACCESS_FINE_LOCATION, false);
+        Boolean coarseLocationGranted = result.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION,false);
+
+        if (Boolean.TRUE.equals(fineLocationGranted) || Boolean.TRUE.equals(coarseLocationGranted)) {
+            if (new GpsHelper(this).isGpsEnabled()) getLastLocation();
+        } else {
+            new MaterialAlertDialogBuilder(this)
+                    .setTitle("Allow Location")
+                    .setMessage("To get weather update in your address, you need to allow location.")
+                    .setCancelable(false)
+                    .setNegativeButton("Cancel", null)
+                    .setPositiveButton("Allow", (paramDialogInterface, paramInt) -> {
+                        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                        Uri uri = Uri.fromParts("package", getPackageName(), null);
+                        intent.setData(uri);
+                        startActivity(intent);
+                    })
+                    .show();
+        }
+    });
+
+    private FusedLocationProviderClient fusedLocationProviderClient;
+    @SuppressLint("MissingPermission")
+    public void getLastLocation() {
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+        fusedLocationProviderClient.getLastLocation()
+                .addOnSuccessListener(location -> {
+                    if (location!=null) getWeather(location);
+                    else getCurrentLocation();
+                })
+                .addOnFailureListener(e -> Toast.makeText(this, "Something went wrong!", Toast.LENGTH_SHORT).show());
+    }
+
+    @SuppressLint("MissingPermission")
+    private void getCurrentLocation() {
+        LocationRequest locationRequest = new LocationRequest
+                .Builder(Priority.PRIORITY_HIGH_ACCURACY, 10000)
+                .setWaitForAccurateLocation(false)
+                .setMinUpdateIntervalMillis(LocationRequest.Builder.IMPLICIT_MIN_UPDATE_INTERVAL)
+                .setMaxUpdateDelayMillis(10000)
+                .build();
+
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+        fusedLocationProviderClient.requestLocationUpdates(locationRequest, new LocationCallback() {
+            @Override
+            public void onLocationResult(@NonNull LocationResult locationResult) {
+                Location location = locationResult.getLastLocation();
+                getWeather(location);
+            }
+        }, Looper.myLooper());
+    }
+
+    private void getWeather(Location location) {
+        if (location != null) {
+            requestWeather(location.getLatitude(), location.getLongitude());
+        } else {
+            Toast.makeText(this, "Something went wrong!", Toast.LENGTH_SHORT).show();
+        }
     }
 }
