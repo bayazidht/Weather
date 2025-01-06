@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Weather</string>
+    <string name="location">Location</string>
+    <string name="humidity">Humidity</string>
+    <string name="wind">Wind</string>
+    <string name="visibility">Visibility</string>
+    <string name="sunrise_amp_sunset"><![CDATA[Sunrise & Sunset]]></string>
 </resources>

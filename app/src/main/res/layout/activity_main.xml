@@ -49,23 +49,24 @@
                 android:layout_height="wrap_content"/>
 
             <TextView
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="50dp"
+                android:layout_margin="5dp"
                 style="@style/TextAppearance.Material3.TitleSmall"
                 android:id="@+id/tv_temp_max_min"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 
             <LinearLayout
-                android:layout_margin="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginTop="50dp"
                 android:orientation="horizontal"
                 android:weightSum="2"
                 android:layout_width="match_parent"
-                android:layout_height="180dp">
+                android:layout_height="190dp">
 
                 <com.google.android.material.card.MaterialCardView
                     app:cardCornerRadius="30dp"
-                    android:layout_margin="5dp"
+                    android:layout_margin="8dp"
                     android:layout_weight="1"
                     android:layout_width="0dp"
                     android:layout_height="match_parent">
@@ -75,18 +76,18 @@
                         android:layout_height="match_parent">
 
                         <com.google.android.material.textview.MaterialTextView
+                            android:drawablePadding="5dp"
                             android:layout_margin="15dp"
                             style="@style/TextAppearance.AppCompat.Small"
-                            app:drawableStartCompat="@drawable/ic_water_drop"
+                            app:drawableStartCompat="@drawable/ic_humidity"
                             android:gravity="center"
-                            android:text="Humidity"
+                            android:text="@string/humidity"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"/>
 
                         <com.google.android.material.textview.MaterialTextView
                             android:layout_marginStart="15dp"
                             android:layout_centerVertical="true"
-                            android:textStyle="bold"
                             style="@style/TextAppearance.Material3.DisplaySmall"
                             android:id="@+id/tv_humidity"
                             android:layout_width="wrap_content"
@@ -98,39 +99,134 @@
 
                 <com.google.android.material.card.MaterialCardView
                     app:cardCornerRadius="30dp"
-                    android:layout_margin="5dp"
+                    android:layout_margin="8dp"
                     android:layout_weight="1"
                     android:layout_width="0dp"
                     android:layout_height="match_parent">
 
-                    <LinearLayout
-                        android:gravity="center"
+                    <RelativeLayout
                         android:orientation="vertical"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
 
                         <com.google.android.material.textview.MaterialTextView
+                            android:drawablePadding="5dp"
+                            android:layout_margin="15dp"
                             style="@style/TextAppearance.AppCompat.Small"
-                            app:drawableStartCompat="@drawable/ic_air"
+                            app:drawableStartCompat="@drawable/ic_wind"
                             android:gravity="center"
-                            android:text="Wind"
+                            android:text="@string/wind"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"/>
 
                         <com.google.android.material.textview.MaterialTextView
-                            android:layout_margin="10dp"
-                            android:textStyle="bold"
+                            android:layout_centerVertical="true"
+                            android:layout_marginStart="15dp"
                             style="@style/TextAppearance.Material3.DisplaySmall"
                             android:id="@+id/tv_wind_speed"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"/>
 
                         <com.google.android.material.textview.MaterialTextView
+                            android:layout_marginStart="15dp"
+                            android:layout_below="@id/tv_wind_speed"
                             android:id="@+id/tv_wind_direction"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"/>
 
-                    </LinearLayout>
+                    </RelativeLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_marginTop="5dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:orientation="horizontal"
+                android:weightSum="2"
+                android:layout_width="match_parent"
+                android:layout_height="190dp">
+
+                <com.google.android.material.card.MaterialCardView
+                    app:cardCornerRadius="30dp"
+                    android:layout_margin="8dp"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent">
+
+                    <RelativeLayout
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:drawablePadding="5dp"
+                            android:layout_margin="15dp"
+                            style="@style/TextAppearance.AppCompat.Small"
+                            app:drawableStartCompat="@drawable/ic_sunset"
+                            android:gravity="center"
+                            android:text="@string/sunrise_amp_sunset"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:drawablePadding="5dp"
+                            app:drawableStartCompat="@drawable/ic_sunrise"
+                            android:layout_centerVertical="true"
+                            android:layout_marginStart="25dp"
+                            android:gravity="center"
+                            style="@style/TextAppearance.AppCompat.Medium"
+                            android:id="@+id/tv_sunrise"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:drawablePadding="5dp"
+                            app:drawableStartCompat="@drawable/ic_sunset"
+                            style="@style/TextAppearance.AppCompat.Medium"
+                            android:layout_marginStart="25dp"
+                            android:gravity="center"
+                            android:layout_below="@id/tv_sunrise"
+                            android:id="@+id/tv_sunset"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+
+                    </RelativeLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    app:cardCornerRadius="30dp"
+                    android:layout_margin="8dp"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:drawablePadding="5dp"
+                            android:layout_margin="15dp"
+                            style="@style/TextAppearance.AppCompat.Small"
+                            app:drawableStartCompat="@drawable/ic_visibility"
+                            android:gravity="center"
+                            android:text="@string/visibility"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_marginStart="15dp"
+                            android:layout_centerVertical="true"
+                            style="@style/TextAppearance.Material3.DisplaySmall"
+                            android:id="@+id/tv_visibility"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+
+                    </RelativeLayout>
 
                 </com.google.android.material.card.MaterialCardView>
 
@@ -148,13 +244,13 @@
             android:id="@+id/search_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Search Location" />
+            android:hint="@string/location" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <com.google.android.material.search.SearchView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:hint="Hello"
+        android:hint="@string/location"
         app:layout_anchor="@id/search_bar">
 
     </com.google.android.material.search.SearchView>

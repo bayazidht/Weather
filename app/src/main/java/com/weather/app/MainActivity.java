@@ -13,18 +13,17 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
+
 public class MainActivity extends AppCompatActivity {
 
-    TextView tv_sky, tv_temp, tv_feels_like, tv_temp_max_min, tv_wind_speed, tv_wind_direction, tv_humidity;
+    TextView tv_sky, tv_temp, tv_feels_like, tv_temp_max_min, tv_wind_speed, tv_wind_direction, tv_humidity, tv_visibility, tv_sunrise, tv_sunset;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +45,11 @@ public class MainActivity extends AppCompatActivity {
         tv_wind_direction = findViewById(R.id.tv_wind_direction);
 
         tv_humidity = findViewById(R.id.tv_humidity);
+
+        tv_visibility = findViewById(R.id.tv_visibility);
+
+        tv_sunrise = findViewById(R.id.tv_sunrise);
+        tv_sunset = findViewById(R.id.tv_sunset);
 
         requestWeather(22.936901, 91.307137);
     }
@@ -73,6 +77,10 @@ public class MainActivity extends AppCompatActivity {
 
                 tv_humidity.setText(String.format("%s%%", main.getString("humidity")));
 
+                tv_visibility.setText(String.format("%s miles", obj.getDouble("visibility")/1000));
+
+                tv_sunrise.setText(String.format("%s", getTime(sys.getLong("sunrise"))));
+                tv_sunset.setText(String.format("%s", getTime(sys.getLong("sunset"))));
 
             } catch (JSONException e) {
                 throw new RuntimeException(e);
@@ -83,6 +91,10 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Something went wrong!", Toast.LENGTH_SHORT).show();
         });
         queue.add(stringRequest);
+    }
 
+    private String getTime(long time) {
+        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a");
+        return sdf.format(time);
     }
 }
