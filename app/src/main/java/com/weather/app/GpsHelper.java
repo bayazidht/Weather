@@ -3,6 +3,7 @@ package com.weather.app;
 import android.content.Context;
 import android.content.Intent;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.provider.Settings;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -32,5 +33,20 @@ public class GpsHelper {
             return true;
         }
         return false;
+    }
+
+    public void showLocationPermissionDialog() {
+        new MaterialAlertDialogBuilder(mContext)
+                .setTitle("Allow Location")
+                .setMessage("To get weather update in your address, you need to allow location.")
+                .setCancelable(false)
+                .setNegativeButton("Cancel", null)
+                .setPositiveButton("Allow", (paramDialogInterface, paramInt) -> {
+                    Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                    Uri uri = Uri.fromParts("package", mContext.getPackageName(), null);
+                    intent.setData(uri);
+                    mContext.startActivity(intent);
+                })
+                .show();
     }
 }

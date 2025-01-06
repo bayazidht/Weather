@@ -2,12 +2,9 @@ package com.weather.app;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.location.Location;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Looper;
-import android.provider.Settings;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,17 +30,16 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.Priority;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
+
+    String unit = "F";
 
     TextView tv_sky, tv_temp, tv_feels_like, tv_temp_max_min, tv_wind_speed,
             tv_wind_direction, tv_humidity, tv_visibility, tv_sunrise, tv_sunset;
@@ -99,20 +95,25 @@ public class MainActivity extends AppCompatActivity {
                 JSONObject wind = obj.getJSONObject("wind");
                 JSONObject sys = obj.getJSONObject("sys");
 
-                tv_sky.setText(weather.getString("main"));
-                tv_temp.setText(String.format("%s°", main.getString("temp")));
-                tv_feels_like.setText(String.format("Feels like %s°", main.getString("feels_like")));
-                tv_temp_max_min.setText(String.format("High %s° · Low %s°", main.getString("temp_max"), main.getString("temp_min")));
+                double temp = main.getDouble("temp");
+                double feels_like = main.getDouble("feels_like");
+                double temp_max = main.getDouble("temp_max");
+                double temp_min = main.getDouble("temp_min");
 
-                tv_wind_speed.setText(String.format("%s mph", wind.getString("speed")));
-                tv_wind_direction.setText(String.format("From %s°", wind.getString("deg")));
+                tv_sky.setText(String.format("%s", weather.getString("main")));
+                tv_temp.setText(String.format("%s°", new Helper().getTemp(temp, unit)));
+                tv_feels_like.setText(String.format("Feels like %s°", new Helper().getTemp(feels_like, unit)));
+                tv_temp_max_min.setText(String.format("High %s° · Low %s°", new Helper().getTemp(temp_max, unit), new Helper().getTemp(temp_min, unit)));
+
+                tv_wind_speed.setText(String.format("%s mph", wind.getDouble("speed")));
+                tv_wind_direction.setText(String.format("From %s", new Helper().getWindDirection(wind.getDouble("deg"))));
 
                 tv_humidity.setText(String.format("%s%%", main.getString("humidity")));
 
-                tv_visibility.setText(String.format("%s miles", obj.getDouble("visibility")/1000));
+                tv_visibility.setText(String.format("%s km", new Helper().getVisibility(obj.getDouble("visibility"))));
 
-                tv_sunrise.setText(String.format("%s", getTime(sys.getLong("sunrise"))));
-                tv_sunset.setText(String.format("%s", getTime(sys.getLong("sunset"))));
+                tv_sunrise.setText(String.format("%s", new Helper().getTime(sys.getLong("sunrise"))));
+                tv_sunset.setText(String.format("%s", new Helper().getTime(sys.getLong("sunset"))));
 
             } catch (JSONException e) {
                 throw new RuntimeException(e);
@@ -142,10 +143,13 @@ public class MainActivity extends AppCompatActivity {
 
                     long time = item.getLong("dt");
 
-                    forecastItems.add(new ForecastItem(getDayName(time), main.getString("temp_max"), main.getString("temp_min"), weatherObj.getString("icon")));
+                    forecastItems.add(new ForecastItem(
+                            new Helper().getDayName(time),
+                            main.getString("temp_max"),
+                            main.getString("temp_min"),
+                            weatherObj.getString("icon")
+                    ));
                 }
-
-
                 recyclerAdapter.notifyDataSetChanged();
 
             } catch (JSONException e) {
@@ -159,40 +163,20 @@ public class MainActivity extends AppCompatActivity {
         });
         queue.add(stringRequest);
     }
-    private String getDayName(long time) {
-        SimpleDateFormat sdf = new SimpleDateFormat("EEE", Locale.getDefault());
-        return sdf.format(time);
-    }
 
 
-    private String getTime(long time) {
-        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a", Locale.getDefault());
-        return sdf.format(time);
-    }
+
 
     private void requestLocationPermissions() {
         locationPermissionRequest.launch(new String[] {android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION});
     }
     ActivityResultLauncher<String[]> locationPermissionRequest = registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), result -> {
-
         Boolean fineLocationGranted = result.getOrDefault(android.Manifest.permission.ACCESS_FINE_LOCATION, false);
         Boolean coarseLocationGranted = result.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION,false);
-
         if (Boolean.TRUE.equals(fineLocationGranted) || Boolean.TRUE.equals(coarseLocationGranted)) {
             if (new GpsHelper(this).isGpsEnabled()) getLastLocation();
         } else {
-            new MaterialAlertDialogBuilder(this)
-                    .setTitle("Allow Location")
-                    .setMessage("To get weather update in your address, you need to allow location.")
-                    .setCancelable(false)
-                    .setNegativeButton("Cancel", null)
-                    .setPositiveButton("Allow", (paramDialogInterface, paramInt) -> {
-                        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                        Uri uri = Uri.fromParts("package", getPackageName(), null);
-                        intent.setData(uri);
-                        startActivity(intent);
-                    })
-                    .show();
+           new GpsHelper(this).showLocationPermissionDialog();
         }
     });
 

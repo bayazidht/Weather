@@ -1,0 +1,46 @@
+package com.weather.app;
+
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+
+public class Helper {
+
+    public String getTemp(double temp, String unit) {
+        if (unit.equals("C")) {
+            return new DecimalFormat("#").format(temp-273.15);
+        } else if (unit.equals("F")) {
+            return new DecimalFormat("#").format((temp-273.15)*9/5+32);
+        } else {
+            return new DecimalFormat("#").format(temp);
+        }
+    }
+
+    public String getDayName(long time) {
+        SimpleDateFormat sdf = new SimpleDateFormat("EEE", Locale.getDefault());
+        return sdf.format(time);
+    }
+
+    public String getTime(long time) {
+        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a", Locale.getDefault());
+        return sdf.format(time);
+    }
+
+    public String getWindDirection(double deg) {
+        if (deg >= 270 && deg <= 315 || deg>= 225 && deg <= 270) {
+            return "West";
+        } else if (deg >= 180 && deg <= 225 || deg>= 135 && deg <= 180) {
+            return "South";
+        } else if (deg >= 90 && deg <= 135 || deg>= 45 && deg <= 90) {
+            return "East";
+        } else {
+            return "North";
+        }
+    }
+
+    public String getVisibility(double visibility) {
+        return new DecimalFormat("#").format((visibility/1000)/1.609344);
+    }
+
+
+}
