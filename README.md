@@ -1,2 +1,1 @@
-Weather App
-Weather app is an android applicaiton to see current weather in your location and forecase. 
+Weather app is an android application to see current weather in your location and forecast. 
