@@ -1,5 +1,7 @@
 package com.weather.app.Tools;
 
+import android.content.SharedPreferences;
+
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
@@ -48,6 +50,12 @@ public class Helper {
 
     public String getWeatherIcon(String icon) {
         return "https://openweathermap.org/img/wn/"+icon+"@4x.png";
+    }
+
+    public void saveData(SharedPreferences sharedPref, String key, String data) {
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString(key, data);
+        editor.apply();
     }
 
 }

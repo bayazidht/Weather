@@ -85,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
 
             if (weather_data != null) setWeather(weather_data);
             if (forecast_data != null) setForecast(forecast_data);
+
         } else {
             requestLocationPermissions();
         }
@@ -134,6 +135,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void setSwipeRefresh() {
         swipeRefreshLayout = findViewById(R.id.swipe_refresh);
+        swipeRefreshLayout.setEnabled(new NetworkHelper(this).isNetworkAvailable());
         swipeRefreshLayout.setOnRefreshListener(() -> requestWeather(lat, lon, city));
     }
 
@@ -184,9 +186,8 @@ public class MainActivity extends AppCompatActivity {
     private void setWeather(String data) {
         try {
             JSONObject obj = new JSONObject(data);
-            SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putString("weather", obj.toString());
-            editor.apply();
+
+            new Helper().saveData(sharedPref, Config.SHAREDPREF_KEY_WEATHER, data);
 
             JSONObject weather = obj.getJSONArray("weather").getJSONObject(0);
             JSONObject main = obj.getJSONObject("main");
@@ -243,9 +244,8 @@ public class MainActivity extends AppCompatActivity {
     private void setForecast(String data) {
         try {
             JSONObject obj = new JSONObject(data);
-            SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putString("forecast", obj.toString());
-            editor.apply();
+
+            new Helper().saveData(sharedPref, Config.SHAREDPREF_KEY_FORECAST, data);
 
             JSONArray list = obj.getJSONArray("list");
 
