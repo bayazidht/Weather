@@ -1,4 +1,4 @@
-package com.weather.app;
+package com.weather.app.Tools;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;

@@ -38,6 +38,12 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.Priority;
 import com.google.android.material.search.SearchBar;
 import com.google.android.material.search.SearchView;
+import com.google.android.material.snackbar.Snackbar;
+import com.weather.app.Adapter.ForecastRecyclerAdapter;
+import com.weather.app.Model.ForecastItem;
+import com.weather.app.Tools.GpsHelper;
+import com.weather.app.Tools.Helper;
+import com.weather.app.Tools.NetworkHelper;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -178,7 +184,11 @@ public class MainActivity extends AppCompatActivity {
             }
         }, error -> {
             swipeRefreshLayout.setRefreshing(false);
-            Toast.makeText(this, "Weather request failed!", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "Weather request failed!", Toast.LENGTH_SHORT).show();
+
+            Snackbar snackbar = Snackbar.make(findViewById(R.id.main), "Invalid address!", Snackbar.LENGTH_INDEFINITE);
+            snackbar.setAction("Clear", view -> recreate());
+            snackbar.show();
         });
         queue.add(stringRequest);
     }
@@ -284,6 +294,9 @@ public class MainActivity extends AppCompatActivity {
     public void onResume(){
         super.onResume();
         requestLocationPermissions();
+        if (!new NetworkHelper(this).isNetworkAvailable()) {
+            new NetworkHelper(this).showMessage();
+        }
     }
 
     private void setLocationName(double latitude, double longitude) {

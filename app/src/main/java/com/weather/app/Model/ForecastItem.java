@@ -1,4 +1,4 @@
-package com.weather.app;
+package com.weather.app.Model;
 
 public class ForecastItem {
 

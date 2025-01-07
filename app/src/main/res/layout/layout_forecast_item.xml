@@ -18,11 +18,10 @@
             <ImageView
                 android:src="@drawable/ic_sunrise"
                 android:id="@+id/iv_weather"
-                android:layout_marginBottom="10dp"
                 android:layout_centerHorizontal="true"
                 android:layout_above="@id/tv_day_name"
                 android:layout_width="match_parent"
-                android:layout_height="65dp"/>
+                android:layout_height="wrap_content"/>
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_temp_max"

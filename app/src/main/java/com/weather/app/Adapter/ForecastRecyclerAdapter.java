@@ -1,4 +1,4 @@
-package com.weather.app;
+package com.weather.app.Adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -11,6 +11,9 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.weather.app.Tools.Helper;
+import com.weather.app.Model.ForecastItem;
+import com.weather.app.R;
 
 import java.util.ArrayList;
 
@@ -34,9 +37,9 @@ public class ForecastRecyclerAdapter extends RecyclerView.Adapter<ForecastRecycl
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         ForecastItem item = forecastItems.get(position);
-        holder.tvDayName.setText(item.dayName);
-        holder.tvTempMax.setText(String.format("%s°", item.tempMax));
-        holder.tvTempMin.setText(String.format("%s°", item.tempMin));
+        holder.tvDayName.setText(item.getDayName());
+        holder.tvTempMax.setText(String.format("%s°", item.getTempMax()));
+        holder.tvTempMin.setText(String.format("%s°", item.getTempMin()));
 
         Glide.with(mContext)
                 .load(new Helper().getWeatherIcon(item.getIcon()))
