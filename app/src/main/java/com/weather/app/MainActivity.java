@@ -2,6 +2,8 @@ package com.weather.app;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Looper;
@@ -20,6 +22,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -39,15 +42,24 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
     private final String unit = "C";
 
+    private double lat, lon;
+    private String city;
+
     private SearchBar searchBar;
+    private SwipeRefreshLayout swipeRefreshLayout;
+
     private TextView tv_sky, tv_temp, tv_feels_like, tv_temp_max_min, tv_wind_speed,
             tv_wind_direction, tv_humidity, tv_visibility, tv_sunrise, tv_sunset;
+
     private ImageView iv_weather;
 
     private ForecastRecyclerAdapter recyclerAdapter;
@@ -90,7 +102,13 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView.setAdapter(recyclerAdapter);
 
         setSearch();
+        setSwipeRefresh();
 
+    }
+
+    private void setSwipeRefresh() {
+        swipeRefreshLayout = findViewById(R.id.swipe_refresh);
+        swipeRefreshLayout.setOnRefreshListener(() -> requestWeather(lat, lon, city));
     }
 
     private void setSearch() {
@@ -107,7 +125,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void requestWeather(double latitude, double longitude, String city) {
-        findViewById(R.id.progress_circular).setVisibility(View.VISIBLE);
+        this.lat = latitude;
+        this.lon = longitude;
+        this.city = city;
+
+        swipeRefreshLayout.setRefreshing(true);
         findViewById(R.id.weather_details).setVisibility(View.GONE);
 
         String url;
@@ -122,15 +144,14 @@ public class MainActivity extends AppCompatActivity {
                 JSONObject main = obj.getJSONObject("main");
                 JSONObject wind = obj.getJSONObject("wind");
                 JSONObject sys = obj.getJSONObject("sys");
+                JSONObject coord = obj.getJSONObject("coord");
 
                 double temp = main.getDouble("temp");
                 double feels_like = main.getDouble("feels_like");
                 double temp_max = main.getDouble("temp_max");
                 double temp_min = main.getDouble("temp_min");
 
-                String city_name = obj.getString("name");
-
-                searchBar.setText(city_name);
+                setLocationName(coord.getDouble("lat"), coord.getDouble("lon"));
 
                 Glide.with(this).load(new Helper().getWeatherIcon(weather.getString("icon"))).into(iv_weather);
 
@@ -149,20 +170,25 @@ public class MainActivity extends AppCompatActivity {
                 tv_sunrise.setText(String.format("%s", new Helper().getTime(sys.getLong("sunrise"))));
                 tv_sunset.setText(String.format("%s", new Helper().getTime(sys.getLong("sunset"))));
 
+                requestForecast(latitude, longitude, city);
             } catch (JSONException e) {
                 throw new RuntimeException(e);
             }
-            findViewById(R.id.progress_circular).setVisibility(View.GONE);
-            findViewById(R.id.weather_details).setVisibility(View.VISIBLE);
         }, error -> {
-            findViewById(R.id.progress_circular).setVisibility(View.GONE);
-            Toast.makeText(this, "Something went wrong!", Toast.LENGTH_SHORT).show();
+            swipeRefreshLayout.setRefreshing(false);
+            Toast.makeText(this, "Weather request failed!", Toast.LENGTH_SHORT).show();
         });
         queue.add(stringRequest);
     }
 
-    private void requestForecast(double latitude, double longitude) {
-        String url = Config.FORECAST_API_URL+"lat="+latitude+"&lon="+longitude+"&appid="+Config.API_KEY;
+    @SuppressLint("NotifyDataSetChanged")
+    private void requestForecast(double latitude, double longitude, String city) {
+        forecastItems.clear();
+        recyclerAdapter.notifyDataSetChanged();
+
+        String url;
+        if (city == null) url = Config.FORECAST_API_URL+"lat="+latitude+"&lon="+longitude+"&appid="+Config.API_KEY;
+        else url = Config.FORECAST_API_URL+"q="+city+"&appid="+Config.API_KEY;
 
         RequestQueue queue = Volley.newRequestQueue(this);
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, response -> {
@@ -186,14 +212,14 @@ public class MainActivity extends AppCompatActivity {
                 }
                 recyclerAdapter.notifyDataSetChanged();
 
+                findViewById(R.id.weather_details).setVisibility(View.VISIBLE);
+                swipeRefreshLayout.setRefreshing(false);
             } catch (JSONException e) {
                 throw new RuntimeException(e);
             }
-            findViewById(R.id.progress_circular).setVisibility(View.GONE);
-            findViewById(R.id.weather_details).setVisibility(View.VISIBLE);
         }, error -> {
-            findViewById(R.id.progress_circular).setVisibility(View.GONE);
-            Toast.makeText(this, "Something went wrong!", Toast.LENGTH_SHORT).show();
+            swipeRefreshLayout.setRefreshing(false);
+            Toast.makeText(this, "Forecast request failed!", Toast.LENGTH_SHORT).show();
         });
         queue.add(stringRequest);
     }
@@ -246,7 +272,6 @@ public class MainActivity extends AppCompatActivity {
     private void getWeather(Location location) {
         if (location != null) {
             requestWeather(location.getLatitude(), location.getLongitude(), null);
-            requestForecast(location.getLatitude(), location.getLongitude());
         } else {
             Toast.makeText(this, "Something went wrong!", Toast.LENGTH_SHORT).show();
         }
@@ -256,5 +281,20 @@ public class MainActivity extends AppCompatActivity {
     public void onResume(){
         super.onResume();
         requestLocationPermissions();
+    }
+
+    private void setLocationName(double latitude, double longitude) {
+        try {
+            Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
+            if (addresses != null) {
+                String country = addresses.get(0).getCountryName();
+                String state = addresses.get(0).getAdminArea();
+                String city = addresses.get(0).getLocality();
+                searchBar.setText(String.format("%s, %s, %s", city, state, country));
+            }
+        } catch (IOException e) {
+            Toast.makeText(this, "Something went wrong!", Toast.LENGTH_SHORT).show();
+        }
     }
 }

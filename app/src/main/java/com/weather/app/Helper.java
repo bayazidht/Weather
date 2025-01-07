@@ -50,9 +50,4 @@ public class Helper {
         return "https://openweathermap.org/img/wn/"+icon+"@4x.png";
     }
 
-    public String getLocationName(double lat, double lon) {
-        Geo
-    }
-
-
 }
