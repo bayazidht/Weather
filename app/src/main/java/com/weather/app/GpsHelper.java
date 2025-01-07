@@ -23,6 +23,7 @@ public class GpsHelper {
 
         if(!gps_enabled && !network_enabled) {
             new MaterialAlertDialogBuilder(mContext)
+                    .setIcon(R.drawable.ic_location)
                     .setTitle("Enable GPS")
                     .setMessage("To get weather update in your address, you need to enable GPS.")
                     .setCancelable(false)
@@ -37,6 +38,7 @@ public class GpsHelper {
 
     public void showLocationPermissionDialog() {
         new MaterialAlertDialogBuilder(mContext)
+                .setIcon(R.drawable.ic_location)
                 .setTitle("Allow Location")
                 .setMessage("To get weather update in your address, you need to allow location.")
                 .setCancelable(false)

@@ -270,6 +270,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <com.google.android.material.search.SearchBar
+            app:navigationIcon="@drawable/ic_location"
             android:id="@+id/search_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -279,7 +280,7 @@
     <com.google.android.material.search.SearchView
         android:id="@+id/search_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:hint="@string/location"
         app:layout_anchor="@id/search_bar">
 

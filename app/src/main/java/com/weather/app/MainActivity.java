@@ -5,8 +5,6 @@ import android.annotation.SuppressLint;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Looper;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -47,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
 
     private final String unit = "C";
 
+    private SearchBar searchBar;
     private TextView tv_sky, tv_temp, tv_feels_like, tv_temp_max_min, tv_wind_speed,
             tv_wind_direction, tv_humidity, tv_visibility, tv_sunrise, tv_sunset;
     private ImageView iv_weather;
@@ -95,29 +94,25 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setSearch() {
-        SearchBar searchBar = findViewById(R.id.search_bar);
+        searchBar = findViewById(R.id.search_bar);
         SearchView searchView = findViewById(R.id.search_view);
-        searchView.setupWithSearchBar(searchBar);
 
-        searchView.getEditText().addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-            @Override
-            public void afterTextChanged(Editable s) {
-                searchView.clearFocus();
-            }
+        searchView.getEditText().setOnEditorActionListener((textView, i, keyEvent) -> {
+            String text = textView.getText().toString();
+            searchView.hide();
+            searchBar.setText(text);
+            requestWeather(0, 0, text);
+            return false;
         });
-
-
     }
 
-    private void requestWeather(double latitude, double longitude) {
-        String url = Config.WEATHER_API_URL+"lat="+latitude+"&lon="+longitude+"&appid="+Config.API_KEY;
+    private void requestWeather(double latitude, double longitude, String city) {
+        findViewById(R.id.progress_circular).setVisibility(View.VISIBLE);
+        findViewById(R.id.weather_details).setVisibility(View.GONE);
 
-        //String url = Config.WEATHER_API_URL+"q=&appid="+Config.API_KEY;
+        String url;
+        if (city == null) url = Config.WEATHER_API_URL+"lat="+latitude+"&lon="+longitude+"&appid="+Config.API_KEY;
+        else url = Config.WEATHER_API_URL+"q="+city+"&appid="+Config.API_KEY;
 
         RequestQueue queue = Volley.newRequestQueue(this);
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, response -> {
@@ -132,6 +127,10 @@ public class MainActivity extends AppCompatActivity {
                 double feels_like = main.getDouble("feels_like");
                 double temp_max = main.getDouble("temp_max");
                 double temp_min = main.getDouble("temp_min");
+
+                String city_name = obj.getString("name");
+
+                searchBar.setText(city_name);
 
                 Glide.with(this).load(new Helper().getWeatherIcon(weather.getString("icon"))).into(iv_weather);
 
@@ -246,7 +245,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void getWeather(Location location) {
         if (location != null) {
-            requestWeather(location.getLatitude(), location.getLongitude());
+            requestWeather(location.getLatitude(), location.getLongitude(), null);
             requestForecast(location.getLatitude(), location.getLongitude());
         } else {
             Toast.makeText(this, "Something went wrong!", Toast.LENGTH_SHORT).show();
