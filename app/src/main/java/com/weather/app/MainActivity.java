@@ -79,16 +79,18 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         if (!new NetworkHelper(this).isNetworkAvailable()) {
             new NetworkHelper(this).showMessage();
-
-            String weather_data = sharedPref.getString(Config.SHAREDPREF_KEY_WEATHER, null);
-            String forecast_data = sharedPref.getString(Config.SHAREDPREF_KEY_FORECAST, null);
-
-            if (weather_data != null) setWeather(weather_data);
-            if (forecast_data != null) setForecast(forecast_data);
-
+            loadOffline();
         } else {
             requestLocationPermissions();
         }
+    }
+
+    private void loadOffline() {
+        String weather_data = sharedPref.getString(Config.SHAREDPREF_KEY_WEATHER, null);
+        String forecast_data = sharedPref.getString(Config.SHAREDPREF_KEY_FORECAST, null);
+
+        if (weather_data != null) setWeather(weather_data);
+        if (forecast_data != null) setForecast(forecast_data);
     }
 
     @Override
@@ -200,7 +202,7 @@ public class MainActivity extends AppCompatActivity {
             double temp_max = main.getDouble("temp_max");
             double temp_min = main.getDouble("temp_min");
 
-            setLocationName(coord.getDouble("lat"), coord.getDouble("lon"));
+            setAddress(coord.getDouble("lat"), coord.getDouble("lon"));
 
             Glide.with(this).load(new Helper().getWeatherIcon(weather.getString("icon"))).into(iv_weather);
 
@@ -224,11 +226,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     private void requestForecast(double latitude, double longitude, String city) {
-        forecastItems.clear();
-        recyclerAdapter.notifyDataSetChanged();
-
         String url;
         if (city == null) url = Config.FORECAST_API_URL+"lat="+latitude+"&lon="+longitude+"&appid="+Config.API_KEY;
         else url = Config.FORECAST_API_URL+"q="+city+"&appid="+Config.API_KEY;
@@ -241,7 +239,10 @@ public class MainActivity extends AppCompatActivity {
         queue.add(stringRequest);
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private void setForecast(String data) {
+        forecastItems.clear();
+        recyclerAdapter.notifyDataSetChanged();
         try {
             JSONObject obj = new JSONObject(data);
 
@@ -303,6 +304,7 @@ public class MainActivity extends AppCompatActivity {
         LocationRequest locationRequest = new LocationRequest
                 .Builder(Priority.PRIORITY_HIGH_ACCURACY, 10000)
                 .setWaitForAccurateLocation(false)
+                .setMaxUpdates(1)
                 .setMinUpdateIntervalMillis(LocationRequest.Builder.IMPLICIT_MIN_UPDATE_INTERVAL)
                 .setMaxUpdateDelayMillis(10000)
                 .build();
@@ -325,7 +327,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void setLocationName(double latitude, double longitude) {
+    private void setAddress(double latitude, double longitude) {
         try {
             Geocoder geocoder = new Geocoder(this, Locale.getDefault());
             List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
