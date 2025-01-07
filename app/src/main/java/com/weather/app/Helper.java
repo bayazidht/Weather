@@ -17,13 +17,13 @@ public class Helper {
     }
 
     public String getDayName(long time) {
-        SimpleDateFormat sdf = new SimpleDateFormat("EEE", Locale.getDefault());
-        return sdf.format(time);
+        SimpleDateFormat sdf = new SimpleDateFormat("EEE\nh a", Locale.getDefault());
+        return sdf.format(time*1000);
     }
 
     public String getTime(long time) {
         SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a", Locale.getDefault());
-        return sdf.format(time);
+        return sdf.format(time*1000);
     }
 
     public String getWindDirection(double deg) {
@@ -39,7 +39,7 @@ public class Helper {
     }
 
     public String getVisibility(double visibility) {
-        return new DecimalFormat("#").format((visibility/1000)/1.609344);
+        return new DecimalFormat("#.#").format((visibility/1000)/1.609344);
     }
 
     public String getWindSpeed(double speed) {

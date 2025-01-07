@@ -22,7 +22,7 @@
                 android:layout_centerHorizontal="true"
                 android:layout_above="@id/tv_day_name"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="65dp"/>
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_temp_max"
@@ -47,8 +47,8 @@
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_day_name"
                 android:alpha="0.7"
+                android:gravity="center"
                 android:text="Today"
-                android:textStyle="bold"
                 android:layout_centerHorizontal="true"
                 android:layout_alignParentBottom="true"
                 android:layout_marginBottom="15dp"

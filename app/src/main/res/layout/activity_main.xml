@@ -19,247 +19,241 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <RelativeLayout
+            <LinearLayout
+                android:visibility="gone"
+                android:id="@+id/weather_details"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_margin="5dp"
+                    style="@style/TextAppearance.AppCompat.Large"
+                    android:id="@+id/tv_sky"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
 
                 <LinearLayout
-                    android:visibility="gone"
-                    android:id="@+id/weather_details"
-                    android:gravity="center_horizontal"
-                    android:orientation="vertical"
-                    android:layout_width="match_parent"
+                    android:gravity="center_vertical"
+                    android:layout_margin="5dp"
+                    android:orientation="horizontal"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
 
                     <TextView
-                        android:layout_margin="5dp"
-                        style="@style/TextAppearance.AppCompat.Large"
-                        android:id="@+id/tv_sky"
+                        android:textStyle="bold"
+                        style="@style/TextAppearance.Material3.DisplayLarge"
+                        android:id="@+id/tv_temp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"/>
 
-                    <LinearLayout
-                        android:gravity="center_vertical"
-                        android:layout_margin="5dp"
-                        android:orientation="horizontal"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content">
-
-                        <TextView
-                            android:textStyle="bold"
-                            style="@style/TextAppearance.Material3.DisplayLarge"
-                            android:id="@+id/tv_temp"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"/>
-
-                        <ImageView
-                            android:layout_gravity="center"
-                            android:id="@+id/iv_weather"
-                            android:layout_width="80dp"
-                            android:layout_height="80dp"/>
-
-                    </LinearLayout>
-
-                    <TextView
-                        android:layout_margin="5dp"
-                        style="@style/TextAppearance.AppCompat.Large"
-                        android:id="@+id/tv_feels_like"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
-
-                    <TextView
-                        android:layout_margin="5dp"
-                        style="@style/TextAppearance.Material3.TitleSmall"
-                        android:id="@+id/tv_temp_max_min"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
-
-                    <LinearLayout
-                        android:layout_marginStart="5dp"
-                        android:layout_marginEnd="5dp"
-                        android:layout_marginTop="30dp"
-                        android:orientation="horizontal"
-                        android:weightSum="2"
-                        android:layout_width="match_parent"
-                        android:layout_height="190dp">
-
-                        <com.google.android.material.card.MaterialCardView
-                            app:cardCornerRadius="30dp"
-                            android:layout_margin="7dp"
-                            android:layout_weight="1"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent">
-
-                            <RelativeLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent">
-
-                                <com.google.android.material.textview.MaterialTextView
-                                    android:drawablePadding="5dp"
-                                    android:layout_margin="15dp"
-                                    style="@style/TextAppearance.AppCompat.Small"
-                                    app:drawableStartCompat="@drawable/ic_humidity"
-                                    android:gravity="center"
-                                    android:text="@string/humidity"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"/>
-
-                                <com.google.android.material.textview.MaterialTextView
-                                    android:layout_marginStart="15dp"
-                                    android:layout_centerVertical="true"
-                                    style="@style/TextAppearance.Material3.DisplaySmall"
-                                    android:id="@+id/tv_humidity"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"/>
-
-                            </RelativeLayout>
-
-                        </com.google.android.material.card.MaterialCardView>
-
-                        <com.google.android.material.card.MaterialCardView
-                            app:cardCornerRadius="30dp"
-                            android:layout_margin="7dp"
-                            android:layout_weight="1"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent">
-
-                            <RelativeLayout
-                                android:orientation="vertical"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent">
-
-                                <com.google.android.material.textview.MaterialTextView
-                                    android:drawablePadding="5dp"
-                                    android:layout_margin="15dp"
-                                    style="@style/TextAppearance.AppCompat.Small"
-                                    app:drawableStartCompat="@drawable/ic_wind"
-                                    android:gravity="center"
-                                    android:text="@string/wind"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"/>
-
-                                <com.google.android.material.textview.MaterialTextView
-                                    android:layout_centerVertical="true"
-                                    android:layout_marginStart="15dp"
-                                    style="@style/TextAppearance.Material3.DisplaySmall"
-                                    android:id="@+id/tv_wind_speed"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"/>
-
-                                <com.google.android.material.textview.MaterialTextView
-                                    android:layout_marginStart="15dp"
-                                    android:layout_below="@id/tv_wind_speed"
-                                    android:id="@+id/tv_wind_direction"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"/>
-
-                            </RelativeLayout>
-
-                        </com.google.android.material.card.MaterialCardView>
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_marginStart="5dp"
-                        android:layout_marginEnd="5dp"
-                        android:orientation="horizontal"
-                        android:weightSum="2"
-                        android:layout_width="match_parent"
-                        android:layout_height="190dp">
-
-                        <com.google.android.material.card.MaterialCardView
-                            app:cardCornerRadius="30dp"
-                            android:layout_margin="7dp"
-                            android:layout_weight="1"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent">
-
-                            <RelativeLayout
-                                android:orientation="vertical"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent">
-
-                                <com.google.android.material.textview.MaterialTextView
-                                    android:drawablePadding="5dp"
-                                    android:layout_margin="15dp"
-                                    style="@style/TextAppearance.AppCompat.Small"
-                                    app:drawableStartCompat="@drawable/ic_sunset"
-                                    android:gravity="center"
-                                    android:text="@string/sunrise_amp_sunset"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"/>
-
-                                <com.google.android.material.textview.MaterialTextView
-                                    android:drawablePadding="5dp"
-                                    app:drawableStartCompat="@drawable/ic_sunrise"
-                                    android:layout_centerVertical="true"
-                                    android:layout_marginStart="25dp"
-                                    android:gravity="center"
-                                    style="@style/TextAppearance.AppCompat.Medium"
-                                    android:id="@+id/tv_sunrise"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"/>
-
-                                <com.google.android.material.textview.MaterialTextView
-                                    android:drawablePadding="5dp"
-                                    app:drawableStartCompat="@drawable/ic_sunset"
-                                    style="@style/TextAppearance.AppCompat.Medium"
-                                    android:layout_marginStart="25dp"
-                                    android:gravity="center"
-                                    android:layout_below="@id/tv_sunrise"
-                                    android:id="@+id/tv_sunset"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"/>
-
-                            </RelativeLayout>
-
-                        </com.google.android.material.card.MaterialCardView>
-
-                        <com.google.android.material.card.MaterialCardView
-                            app:cardCornerRadius="30dp"
-                            android:layout_margin="7dp"
-                            android:layout_weight="1"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent">
-
-                            <RelativeLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent">
-
-                                <com.google.android.material.textview.MaterialTextView
-                                    android:drawablePadding="5dp"
-                                    android:layout_margin="15dp"
-                                    style="@style/TextAppearance.AppCompat.Small"
-                                    app:drawableStartCompat="@drawable/ic_visibility"
-                                    android:gravity="center"
-                                    android:text="@string/visibility"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"/>
-
-                                <com.google.android.material.textview.MaterialTextView
-                                    android:layout_marginStart="15dp"
-                                    android:layout_centerVertical="true"
-                                    style="@style/TextAppearance.Material3.DisplaySmall"
-                                    android:id="@+id/tv_visibility"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"/>
-
-                            </RelativeLayout>
-
-                        </com.google.android.material.card.MaterialCardView>
-
-                    </LinearLayout>
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/forecast_list"
-                        android:layout_marginTop="20dp"
-                        android:layout_marginBottom="50dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"/>
+                    <ImageView
+                        android:layout_gravity="center"
+                        android:id="@+id/iv_weather"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"/>
 
                 </LinearLayout>
 
-            </RelativeLayout>
+                <TextView
+                    android:layout_margin="5dp"
+                    style="@style/TextAppearance.AppCompat.Large"
+                    android:id="@+id/tv_feels_like"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:layout_margin="5dp"
+                    style="@style/TextAppearance.Material3.TitleSmall"
+                    android:id="@+id/tv_temp_max_min"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <LinearLayout
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:layout_marginTop="30dp"
+                    android:orientation="horizontal"
+                    android:weightSum="2"
+                    android:layout_width="match_parent"
+                    android:layout_height="190dp">
+
+                    <com.google.android.material.card.MaterialCardView
+                        app:cardCornerRadius="30dp"
+                        android:layout_margin="7dp"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent">
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:drawablePadding="5dp"
+                                android:layout_margin="15dp"
+                                style="@style/TextAppearance.AppCompat.Small"
+                                app:drawableStartCompat="@drawable/ic_humidity"
+                                android:gravity="center"
+                                android:text="@string/humidity"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:layout_marginStart="15dp"
+                                android:layout_centerVertical="true"
+                                style="@style/TextAppearance.Material3.DisplaySmall"
+                                android:id="@+id/tv_humidity"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
+
+                        </RelativeLayout>
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.card.MaterialCardView
+                        app:cardCornerRadius="30dp"
+                        android:layout_margin="7dp"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent">
+
+                        <RelativeLayout
+                            android:orientation="vertical"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:drawablePadding="5dp"
+                                android:layout_margin="15dp"
+                                style="@style/TextAppearance.AppCompat.Small"
+                                app:drawableStartCompat="@drawable/ic_wind"
+                                android:gravity="center"
+                                android:text="@string/wind"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:layout_centerVertical="true"
+                                android:layout_marginStart="15dp"
+                                style="@style/TextAppearance.Material3.DisplaySmall"
+                                android:id="@+id/tv_wind_speed"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:layout_marginStart="15dp"
+                                android:layout_below="@id/tv_wind_speed"
+                                android:id="@+id/tv_wind_direction"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
+
+                        </RelativeLayout>
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:orientation="horizontal"
+                    android:weightSum="2"
+                    android:layout_width="match_parent"
+                    android:layout_height="190dp">
+
+                    <com.google.android.material.card.MaterialCardView
+                        app:cardCornerRadius="30dp"
+                        android:layout_margin="7dp"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent">
+
+                        <RelativeLayout
+                            android:orientation="vertical"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:drawablePadding="5dp"
+                                android:layout_margin="15dp"
+                                style="@style/TextAppearance.AppCompat.Small"
+                                app:drawableStartCompat="@drawable/ic_sunset"
+                                android:gravity="center"
+                                android:text="@string/sunrise_amp_sunset"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:drawablePadding="5dp"
+                                app:drawableStartCompat="@drawable/ic_sunrise"
+                                android:layout_centerVertical="true"
+                                android:layout_marginStart="25dp"
+                                android:gravity="center"
+                                style="@style/TextAppearance.AppCompat.Medium"
+                                android:id="@+id/tv_sunrise"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:drawablePadding="5dp"
+                                app:drawableStartCompat="@drawable/ic_sunset"
+                                style="@style/TextAppearance.AppCompat.Medium"
+                                android:layout_marginStart="25dp"
+                                android:gravity="center"
+                                android:layout_below="@id/tv_sunrise"
+                                android:id="@+id/tv_sunset"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
+
+                        </RelativeLayout>
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.card.MaterialCardView
+                        app:cardCornerRadius="30dp"
+                        android:layout_margin="7dp"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent">
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:drawablePadding="5dp"
+                                android:layout_margin="15dp"
+                                style="@style/TextAppearance.AppCompat.Small"
+                                app:drawableStartCompat="@drawable/ic_visibility"
+                                android:gravity="center"
+                                android:text="@string/visibility"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:layout_marginStart="15dp"
+                                android:layout_centerVertical="true"
+                                style="@style/TextAppearance.Material3.DisplaySmall"
+                                android:id="@+id/tv_visibility"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
+
+                        </RelativeLayout>
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                </LinearLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/forecast_list"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="50dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+            </LinearLayout>
 
         </androidx.core.widget.NestedScrollView>
 

@@ -7,6 +7,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Looper;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -138,6 +139,7 @@ public class MainActivity extends AppCompatActivity {
 
         RequestQueue queue = Volley.newRequestQueue(this);
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, response -> {
+            Log.d("WWWWW", response);
             try {
                 JSONObject obj = new JSONObject(response);
                 JSONObject weather = obj.getJSONArray("weather").getJSONObject(0);
@@ -192,6 +194,7 @@ public class MainActivity extends AppCompatActivity {
 
         RequestQueue queue = Volley.newRequestQueue(this);
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, response -> {
+
             try {
                 JSONObject obj = new JSONObject(response);
                 JSONArray list = obj.getJSONArray("list");
