@@ -20,7 +20,15 @@ Weather app is an Android application to see current weather in your location an
    1. Download an emulator in Android Studio
    2. Select that emulator and run the project
 2. Run the project on a physical device
-   1. Enable Developer option in your device
-   2. Allow ADB from Developer option
+   1. Enable the Developer option on your device
+   2. Allow ADB from the Developer option
    3. Connect the phone via USB
-   4. Select the device in Androoid Studio and Run the project
+   4. Select the device in Android Studio and Run the project
+
+## Limitations 
+1. Since open weather API isn't completely free, so after a certain amount of requests free limit will expire.
+2. Only city name search can be found. A village or post office can't be found in this API.
+3. Since this app uses free weather and forecast API. So all detailed data can't be found in the API.
+
+## Known Issues
+1. Searching with the wrong city name not responding with a proper error message.
