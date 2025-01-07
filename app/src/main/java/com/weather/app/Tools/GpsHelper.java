@@ -1,5 +1,6 @@
 package com.weather.app.Tools;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.location.LocationManager;
@@ -7,6 +8,7 @@ import android.net.Uri;
 import android.provider.Settings;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.snackbar.Snackbar;
 import com.weather.app.R;
 
 public class GpsHelper {
@@ -51,5 +53,11 @@ public class GpsHelper {
                     mContext.startActivity(intent);
                 })
                 .show();
+    }
+
+    public void showLocationRequestFailedMessage() {
+        Snackbar snackbar = Snackbar.make(((Activity)mContext).findViewById(R.id.main), "Location request failed!", Snackbar.LENGTH_INDEFINITE);
+        snackbar.setAction("Refresh", view -> ((Activity) mContext).recreate());
+        snackbar.show();
     }
 }

@@ -260,7 +260,7 @@ public class MainActivity extends AppCompatActivity {
                     if (location!=null) getWeather(location);
                     else getCurrentLocation();
                 })
-                .addOnFailureListener(e -> Toast.makeText(this, "Something went wrong!", Toast.LENGTH_SHORT).show());
+                .addOnFailureListener(e ->  new GpsHelper(this).showLocationRequestFailedMessage());
     }
 
     @SuppressLint("MissingPermission")
@@ -286,7 +286,7 @@ public class MainActivity extends AppCompatActivity {
         if (location != null) {
             requestWeather(location.getLatitude(), location.getLongitude(), null);
         } else {
-            Toast.makeText(this, "Something went wrong!", Toast.LENGTH_SHORT).show();
+            new GpsHelper(this).showLocationRequestFailedMessage();
         }
     }
 
